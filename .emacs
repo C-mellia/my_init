@@ -38,6 +38,7 @@
 (straight-use-package 'go-mode)
 (straight-use-package 'company-mode)
 ;; (straight-use-package 'markdown-preview-mode)
+(straight-use-package 'fzf)
 
 (setq ring-bell-function 'ignore)
 (setq compilation-save-buffers-predicate 'ignore)
@@ -64,20 +65,31 @@
 
 ;; (add-hook `rust-mode-hook `eglot-ensure)
 
+(global-unset-key (kbd "C-x m"))
+(global-unset-key (kbd "M-/"))
+(global-unset-key (kbd "C-/"))
+(global-unset-key (kbd "C-x f"))
+(global-unset-key (kbd "C-x C-d"))
+(global-unset-key (kbd "C-_"))
+(global-unset-key (kbd "C-h"))
+(global-unset-key (kbd "M-{"))
+(global-unset-key (kbd "M-}"))
+
 (keymap-global-set "M-P" 'move-text-up)
 (keymap-global-set "M-N" 'move-text-down)
 (keymap-global-set "C-!" 'buffer-menu)
 (keymap-global-set "C-c C-g" 'find-file-at-point)
-(keymap-global-set "C-c C-d" (lambda() (interactive) (dired "~")))
-(keymap-global-set "C-`" (lambda() (interactive) (find-file "/home/camellia/.emacs")))		   
+(keymap-global-set "C-`" (lambda() (interactive) (find-file "/home/camellia/my_init/.emacs")))		   
 (global-set-key (kbd "C-x C-c") (lambda () (interactive) (save-buffers-kill-emacs t)))
 (global-set-key (kbd "C-c a C-r") (lambda () (interactive) (load-file "/home/camellia/.emacs")))	
-(global-set-key [f5] 'compile)
-(global-set-key (kbd "C-<f9>") 'view-mode)
-(global-set-key (kbd "C-<tab>") 'ido-complete)
+(global-set-key (kbd "C-c C-s") 'compile)
+(global-set-key (kbd "C-c C-v") 'view-mode)
+(global-set-key (kbd "C-=") 'forward-sexp)
+(global-set-key (kbd "C--") 'backward-sexp)
+(global-set-key (kbd "C-h") 'backward-delete-char-untabify)
+(global-set-key (kbd "C-}") 'forward-paragraph)
+(global-set-key (kbd "C-{") 'backward-paragraph)
 
-(global-unset-key "\C-xm")
-(global-unset-key "\M-/")
 (global-set-key (kbd "M-/") 'company-complete)
 
 (setq-default truncate-lines 'nil)
@@ -87,7 +99,7 @@
 (setq display-line-numbers 'relative)
 
 (setq-default line-spacing 0.2)
-(add-to-list 'default-frame-alist '(font . "Input Mono-24"))
+(add-to-list 'default-frame-alist '(font . "ComicShannsMonoNerdFontMono-16"))
 (set-face-attribute 'default nil :height 250)
 (setq ido-enable-flex-matching t)
 (setq ido-everywhere t)
@@ -266,6 +278,9 @@
    (c++-ts-mode . c++-mode)
    (python-ts-mode . python-mode)))
 
+(require 'fzf)
+(global-set-key (kbd "C-x f") 'fzf-find-file)
+(global-set-key (kbd "C-x C-d") 'fzf-directory)
 
 ;; c
 ;; (add-to-list 'auto-mode-alist
