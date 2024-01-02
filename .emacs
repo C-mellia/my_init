@@ -19,7 +19,7 @@
 (straight-use-package 'marginalia)
 (straight-use-package 'pyim)
 (straight-use-package 'verilog-ts-mode)
-(straight-use-package 'doom-themes)
+;; (straight-use-package 'doom-themes)
 (straight-use-package 'w3m)
 (straight-use-package 'magit)
 (straight-use-package 'multiple-cursors)
@@ -37,8 +37,34 @@
 (straight-use-package 'smart-tab)
 (straight-use-package 'go-mode)
 (straight-use-package 'company-mode)
-;; (straight-use-package 'markdown-preview-mode)
 (straight-use-package 'fzf)
+(straight-use-package 'dumb-jump)
+(straight-use-package 'modern-cpp-font-lock)
+
+;; (use-package lambda-line
+;;   :straight (:type git :host github :repo "lambda-emacs/lambda-line") 
+;;   :custom
+;;   ;; (lambda-line-icon-time t)
+;;   (lambda-line-clockface-update-fontset "ComicShannsMonoNerdFontMono") 
+;;   (lambda-line-position 'bottom) ;; Set position of status-line 
+;;   (lambda-line-abbrev 'nil) ;; abbreviate major modes
+;;   (lambda-line-hspace "  ")  ;; add some cushion
+;;   (lambda-line-prefix t) ;; use a prefix symbol
+;;   (lambda-line-prefix-padding t) ;; no extra space for prefix 
+;;   (lambda-line-status-invert nil)  ;; no invert colors
+;;   (lambda-line-gui-ro-symbol  " 󰈡") ;; symbols
+;;   (lambda-line-gui-mod-symbol " ") 
+;;   (lambda-line-gui-rw-symbol  " ") 
+;;   (lambda-line-space-top +.20)  ;; padding on top and bottom of line
+;;   (lambda-line-space-bottom -.20)
+;;   (lambda-line-symbol-position 0.1) ;; adjust the vertical placement of symbol
+;;   :config
+;;   ;; activate lambda-line 
+;;   (lambda-line-mode) 
+;;   ;; set divider line in footer
+;;   (when (eq lambda-line-position 'top)
+;;     (setq-default mode-line-format (list "%_"))
+;;     (setq mode-line-format (list "%_"))))
 
 (setq ring-bell-function 'ignore)
 (setq compilation-save-buffers-predicate 'ignore)
@@ -82,13 +108,18 @@
 (keymap-global-set "C-`" (lambda() (interactive) (find-file "/home/camellia/my_init/.emacs")))		   
 (global-set-key (kbd "C-x C-c") (lambda () (interactive) (save-buffers-kill-emacs t)))
 (global-set-key (kbd "C-c a C-r") (lambda () (interactive) (load-file "/home/camellia/.emacs")))	
-(global-set-key (kbd "C-c C-s") 'compile)
-(global-set-key (kbd "C-c C-v") 'view-mode)
+;; (global-set-key (kbd "C-x c s") 'compile)
+(global-set-key (kbd "<f5>") 'compile)
+(global-set-key (kbd "C-x c v") 'view-mode)
 (global-set-key (kbd "C-=") 'forward-sexp)
 (global-set-key (kbd "C--") 'backward-sexp)
 (global-set-key (kbd "C-h") 'backward-delete-char-untabify)
 (global-set-key (kbd "C-}") 'forward-paragraph)
 (global-set-key (kbd "C-{") 'backward-paragraph)
+(global-set-key (kbd "M-g d") 'dumb-jump-go)
+(global-set-key (kbd "M-g -") 'dumb-jump-back)
+(global-set-key (kbd "M-g s") (lambda() (interactive) (point-to-register 'j)))
+(global-set-key (kbd "M-g j") (lambda() (interactive) (jump-to-register 'j)))
 
 (global-set-key (kbd "M-/") 'company-complete)
 
@@ -98,9 +129,9 @@
 (global-display-line-numbers-mode 1)
 (setq display-line-numbers 'relative)
 
-(setq-default line-spacing 0.2)
+;; (setq-default line-spacing 0.1)
 (add-to-list 'default-frame-alist '(font . "ComicShannsMonoNerdFontMono-16"))
-(set-face-attribute 'default nil :height 250)
+;; (set-face-attribute 'default nil :height 250)
 (setq ido-enable-flex-matching t)
 (setq ido-everywhere t)
 (ido-mode 1)
@@ -114,8 +145,8 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(c-ts-mode-emacs-sources-support nil)
- '(c-ts-mode-indent-offset 4)
+ ;; '(c-ts-mode-emacs-sources-support nil)
+ ;; '(c-ts-mode-indent-offset 4)
  '(company-idle-delay nil)
  '(cursor-type 'box)
  '(custom-enabled-themes '(gruber-darker))
@@ -296,3 +327,5 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+(add-hook 'c++-mode-hook #'modern-c++-font-lock-mode)
