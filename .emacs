@@ -27,17 +27,13 @@
 (straight-use-package 'evil-nerd-commenter)
 (straight-use-package 'markdown-mode)
 (straight-use-package 'dockerfile-mode)
-(straight-use-package 'docker)
 (straight-use-package 'rust-mode)
 (straight-use-package 'gruber-darker-theme)
-(straight-use-package 'pydoc)
 (straight-use-package 'go-mode)
 (straight-use-package 'company-mode)
 (straight-use-package 'fzf)
-(straight-use-package 'dumb-jump)
 (straight-use-package 'helm)
 (straight-use-package 'helm-xref)
-(straight-use-package 'which-key)
 (straight-use-package 'javascript-mode)
 
 (setq company-format-margin-function #'company-text-icons-margin)
@@ -46,33 +42,6 @@
 (define-key global-map [remap find-file] #'helm-find-files)
 (define-key global-map [remap execute-extended-command] #'helm-M-x)
 (define-key global-map [remap switch-to-buffer] #'helm-mini)
-
-(which-key-mode)
-
-;; (use-package lambda-line
-;;   :straight (:type git :host github :repo "lambda-emacs/lambda-line") 
-;;   :custom
-;;   ;; (lambda-line-icon-time t)
-;;   (lambda-line-clockface-update-fontset "ComicShannsMonoNerdFontMono") 
-;;   (lambda-line-position 'bottom) ;; Set position of status-line 
-;;   (lambda-line-abbrev 'nil) ;; abbreviate major modes
-;;   (lambda-line-hspace "  ")  ;; add some cushion
-;;   (lambda-line-prefix t) ;; use a prefix symbol
-;;   (lambda-line-prefix-padding t) ;; no extra space for prefix 
-;;   (lambda-line-status-invert nil)  ;; no invert colors
-;;   (lambda-line-gui-ro-symbol  " 󰈡") ;; symbols
-;;   (lambda-line-gui-mod-symbol " ") 
-;;   (lambda-line-gui-rw-symbol  " ") 
-;;   (lambda-line-space-top +.20)  ;; padding on top and bottom of line
-;;   (lambda-line-space-bottom -.20)
-;;   (lambda-line-symbol-position 0.1) ;; adjust the vertical placement of symbol
-;;   :config
-;;   ;; activate lambda-line 
-;;   (lambda-line-mode) 
-;;   ;; set divider line in footer
-;;   (when (eq lambda-line-position 'top)
-;;     (setq-default mode-line-format (list "%_"))
-;;     (setq mode-line-format (list "%_"))))
 
 (setq ring-bell-function 'ignore)
 (setq compilation-save-buffers-predicate 'ignore)
@@ -95,6 +64,7 @@
  tab-width 4
  standard-indent 4)
 
+(global-unset-key (kbd "C-x C-b"))
 (global-unset-key (kbd "C-x m"))
 (global-unset-key (kbd "M-/"))
 (global-unset-key (kbd "C-/"))
@@ -106,29 +76,58 @@
 (global-unset-key (kbd "M-}"))
 (global-unset-key (kbd "M-m"))
 
-;; (keymap-global-set "M-P" 'move-text-up)
-;; (keymap-global-set "M-N" 'move-text-down)
 (keymap-global-set "C-c C-g" 'find-file-at-point)
 (keymap-global-set "C-`" (lambda() (interactive) (find-file "/home/camellia/my_init/.emacs")))		   
 (global-set-key (kbd "C-x C-c") (lambda () (interactive) (save-buffers-kill-emacs t)))
 (global-set-key (kbd "C-c a C-r") (lambda () (interactive) (load-file "/home/camellia/.emacs")))	
-;; (global-set-key (kbd "C-x c s") 'compile)
 (global-set-key (kbd "<f5>") 'compile)
 (global-set-key (kbd "C-x c v") 'view-mode)
 (global-set-key (kbd "C-=") 'forward-sexp)
 (global-set-key (kbd "C--") 'backward-sexp)
-(global-set-key (kbd "C-h") 'backward-delete-char-untabify)
 (global-set-key (kbd "C-}") 'forward-paragraph)
 (global-set-key (kbd "C-{") 'backward-paragraph)
-(global-set-key (kbd "M-g d") 'dumb-jump-go)
-(global-set-key (kbd "M-g -") 'dumb-jump-back)
 (global-set-key (kbd "M-g s") (lambda() (interactive) (point-to-register 'j)))
 (global-set-key (kbd "M-g j") (lambda() (interactive) (jump-to-register 'j)))
 (global-set-key (kbd "C-_") 'back-to-indentation)
-(keymap-global-set "C-!" (kbd "C-0 C-k"))
+
+;; move line elisp source: [https://stackoverflow.com/questions/2423834/move-line-region-up-and-down-in-emacs]
+;; ** I  c a n ' t  c o d e **
+(defun move-text-internal (arg)
+   (cond
+    ((and mark-active transient-mark-mode)
+     (if (> (point) (mark))
+            (exchange-point-and-mark))
+     (let ((column (current-column))
+              (text (delete-and-extract-region (point) (mark))))
+       (forward-line arg)
+       (move-to-column column t)
+       (set-mark (point))
+       (insert text)
+       (exchange-point-and-mark)
+       (setq deactivate-mark nil)))
+    (t
+     (beginning-of-line)
+     (when (or (> arg 0) (not (bobp)))
+       (forward-line)
+       (when (or (< arg 0) (not (eobp)))
+            (transpose-lines arg))
+       (forward-line -1)))))
+
+(defun move-text-down (arg)
+   (interactive "*p")
+   (move-text-internal arg))
+
+(defun move-text-up (arg)
+   (interactive "*p")
+   (move-text-internal (- arg)))
+
+(global-set-key (kbd "M-p") 'move-text-up)
+(global-set-key (kbd "M-n") 'move-text-down)
+
+(keymap-global-set "C-h" (kbd "C-0 C-k"))
  
 (global-set-key (kbd "M-/") 'company-complete)
-(setq-default company-idle-delay nil)
+(setq-default company-idle-delay 0.0)
 
 (setq-default truncate-lines 'nil)
 (setq display-time-load-average 'nil)
